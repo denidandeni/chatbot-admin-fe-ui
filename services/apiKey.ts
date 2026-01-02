@@ -10,6 +10,13 @@ export interface ApiKeyInfo {
   created_at: string;
 }
 
+export interface OrganizationOption {
+  id: string;
+  name: string;
+  is_active: boolean;
+  description?: string;
+}
+
 export interface ApiKeyResponse {
   api_key: string;
   key_info: ApiKeyInfo;
