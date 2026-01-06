@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
 import Sidebar from "@/app/components/Sidebar";
-import Footer from "@/app/components/Footer";
+import TopBar from "@/app/components/TopBar";
+
 import ToastProvider, { useToastContext } from "@/app/components/ToastProvider";
 import { logoutRequest } from "@/services/auth";
 import { setupTokenRefreshInterval } from "@/services/tokenUtils";
@@ -52,11 +53,19 @@ function AdminLayoutContent({
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar onLogout={handleLogout} isCollapsed={isCollapsed} />
-      <div className="flex-1 overflow-y-auto bg-slate-50">
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+      <div className="flex-1 flex flex-col min-w-0 bg-[#FBFBFB] relative py-2 md:py-4">
+        <div className="bg-white rounded-3xl flex-1 flex flex-col border border-slate-200 shadow-sm overflow-hidden">
+          {/* Fixed TopBar */}
+          <div className="flex-shrink-0 p-4 md:p-6">
+            <TopBar onLogout={handleLogout} />
+          </div>
+          {/* Scrollable Content */}
+          <main className="flex-1 overflow-y-auto px-4 pb-4 md:px-6 md:pb-6">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );

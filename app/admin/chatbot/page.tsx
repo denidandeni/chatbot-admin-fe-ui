@@ -17,6 +17,7 @@ import {
 } from "@/services/chatbot";
 import { useToastContext } from "../../components/ToastProvider";
 import { getLoggedInUser, isSuperAdmin } from "@/services/tokenUtils";
+import PageHeader from "../../components/PageHeader";
 
 export default function ChatbotPage() {
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
@@ -143,52 +144,50 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="p-8 bg-slate-100 min-h-screen">
-      <div className="bg-white rounded-xl p-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold font-inter text-gray-900">
-              Agent Management
-            </h1>
-            <p className="text-sm text-gray-600 mt-2 font-inter">
-              {isSuper
-                ? "Create and manage your agent instances"
-                : "Manage your agent instances"}
-            </p>
-          </div>
+    <div>
 
-          {/* Only show Create button for super admin */}
-          {isSuper && (
-            <button
-              onClick={() => handleOpenForm()}
-              className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+      {/* Header */}
+      <PageHeader
+        title="Agent Management"
+        description={isSuper
+          ? "Create and manage your agent instances"
+          : "Manage your agent instances"}
+        breadcrumbItems={[
+          { label: "Pages" },
+          { label: "AI Agents", href: "/admin/chatbot" }
+        ]}
+      >
+        {/* Only show Create button for super admin */}
+        {isSuper && (
+          <button
+            onClick={() => handleOpenForm()}
+            className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Create New Agent
-            </button>
-          )}
-        </div>
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create New Agent
+          </button>
+        )}
+      </PageHeader>
 
-        {/* Table */}
-        <ChatbotTable
-          chatbots={chatbots}
-          isLoading={isLoadingChatbots}
-          onEdit={handleOpenForm}
-          onDelete={handleDelete}
-          isSuperAdmin={isSuper}
-        />
-      </div>
+      {/* Table */}
+      <ChatbotTable
+        chatbots={chatbots}
+        isLoading={isLoadingChatbots}
+        onEdit={handleOpenForm}
+        onDelete={handleDelete}
+        isSuperAdmin={isSuper}
+      />
+
 
       {/* Slide Sheet for Create Form */}
       <SlideSheet

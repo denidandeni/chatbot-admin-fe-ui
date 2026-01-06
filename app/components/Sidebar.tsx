@@ -3,23 +3,32 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { isAdmin } from "@/services/tokenUtils";
+import { isAdmin, isSuperAdmin } from "@/services/tokenUtils";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
-import PeopleIcon from '@mui/icons-material/People';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutIcon from '@mui/icons-material/Logout';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+
+interface SidebarSubItem {
+  id: string;
+  label: string;
+  href: string;
+}
 
 interface SidebarItem {
   id: string;
   label: string;
-  href: string;
+  href?: string;
   icon: React.ComponentType<{ className?: string }>;
+  children?: SidebarSubItem[];
+  superAdminOnly?: boolean;
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -30,28 +39,48 @@ const sidebarItems: SidebarItem[] = [
     icon: DashboardIcon,
   },
   {
+    id: "crm",
+    label: "CRM",
+    href: "/admin/crm",
+    icon: ContactsIcon,
+  },
+  {
+    id: "support",
+    label: "User Management",
+    href: "/admin/user",
+    icon: SupportAgentIcon,
+  },
+  {
+    id: "ai-agent",
+    label: "AI Agent",
+    icon: SmartToyIcon,
+    children: [
+      { id: "all-agents", label: "All Agents", href: "/admin/chatbot" },
+      { id: "knowledge-base", label: "Knowledge Base", href: "/admin/ai-agent/knowledge-base" },
+      { id: "platforms", label: "Connected Platform", href: "/admin/ai-agent/platforms" },
+    ],
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: SettingsIcon,
+    children: [
+      { id: "connectors", label: "Setup Connectors", href: "/admin/settings/connectors" },
+      { id: "api-keys", label: "API Keys", href: "/admin/api-key" },
+    ],
+  },
+  {
+    id: "help",
+    label: "Help / Guide",
+    href: "/admin/help",
+    icon: HelpOutlineIcon,
+  },
+  {
     id: "organization",
     label: "Tenant Management",
     href: "/admin/organization",
     icon: BusinessIcon,
-  },
-  {
-    id: "user",
-    label: "User Management",
-    href: "/admin/user",
-    icon: PeopleIcon,
-  },
-  {
-    id: "chatbot",
-    label: "Agent",
-    href: "/admin/chatbot",
-    icon: SmartToyIcon,
-  },
-  {
-    id: "api-key",
-    label: "API Keys",
-    href: "/admin/api-key",
-    icon: VpnKeyIcon,
+    superAdminOnly: true,
   },
 ];
 
@@ -65,62 +94,44 @@ export default function Sidebar({
   isCollapsed,
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [userName, setUserName] = useState("User");
-  const [userEmail, setUserEmail] = useState("user@example.com");
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [filteredSidebarItems, setFilteredSidebarItems] = useState<SidebarItem[]>(sidebarItems);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    // Get user data dari sessionStorage terlebih dahulu
-    let userData = sessionStorage.getItem("user");
+    const userIsSuperAdmin = isSuperAdmin();
+    if (userIsSuperAdmin) {
+      setFilteredSidebarItems(sidebarItems);
+    } else {
+      setFilteredSidebarItems(sidebarItems.filter(item => !item.superAdminOnly));
+    }
 
-    // Jika tidak ada di sessionStorage, coba ambil dari cookie
-    if (!userData) {
-      // Coba parse dari document.cookie
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'user') {
-          userData = decodeURIComponent(value);
-          break;
+    // Auto-expand sections based on current path
+    sidebarItems.forEach(item => {
+      if (item.children) {
+        const isChildActive = item.children.some(child => pathname.startsWith(child.href));
+        if (isChildActive && !expandedSections.includes(item.id)) {
+          setExpandedSections(prev => [...prev, item.id]);
         }
       }
-    }
-
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        // Handle different response structures from backend
-        const name = user.name || user.username || user.email?.split("@")[0] || "User";
-        const email = user.email || "user@example.com";
-
-        setUserName(name);
-        setUserEmail(email);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-        setUserName("User");
-        setUserEmail("user@example.com");
-      }
-    }
-
-    // Filter sidebar items based on user role
-    const userIsAdmin = isAdmin();
-    if (userIsAdmin) {
-      // Hide organization tab for admin users
-      setFilteredSidebarItems(sidebarItems.filter(item => item.id !== 'organization'));
-    } else {
-      // Show all items for super admin
-      setFilteredSidebarItems(sidebarItems);
-    }
-  }, []);
+    });
+  }, [pathname]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  const toggleSection = (id: string) => {
+    setExpandedSections(prev =>
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+    );
+  };
+
   const isActive = (href: string) => {
-    return pathname === href;
+    if (href === "/admin") {
+      return pathname === href;
+    }
+    return pathname.startsWith(href);
   };
 
   return (
@@ -149,98 +160,94 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen ${isCollapsed ? 'w-20' : 'w-64'} bg-gradient-to-br from-[#004BB5] to-[#1C84EE] text-white transition-all duration-300 z-40 lg:translate-x-0 flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`bg-[#FBFBFB] text-slate-600 transition-all duration-300 flex flex-col ${isCollapsed ? 'w-20' : 'w-56'
+          } ${isOpen ? "fixed inset-y-0 left-0 z-40 translate-x-0" : "hidden lg:flex"}`}
       >
         {/* Logo Section */}
-        <div className={`${isCollapsed ? 'p-4' : 'p-8'}`}>
+        <div className={`${isCollapsed ? 'p-4' : 'p-4'}`}>
           {isCollapsed ? (
-            <h1 className="text-2xl font-bold font-inter text-center">AI</h1>
+            <h1 className="text-2xl font-bold font-inter text-center text-slate-900">AI</h1>
           ) : (
             <>
-              <h1 className="text-2xl font-bold font-inter">AMANI AI</h1>
-              <p className="text-blue-100 text-sm mt-1">Futuristic AI Agent</p>
+              <h1 className="text-2xl font-bold font-inter text-slate-900">AMANI AI</h1>
+              <p className="text-slate-500 text-sm mt-1">Futuristic AI Agent</p>
             </>
           )}
         </div>
 
         {/* Navigation Items */}
-        <nav className={`flex-1 ${isCollapsed ? 'px-2' : 'px-4'} py-2`}>
-          <ul className="space-y-2">
+        <nav className={`flex-1 ${isCollapsed ? 'px-2' : 'px-2'} py-2 overflow-y-auto`}>
+          <ul className="space-y-1">
             {filteredSidebarItems.map((item) => {
               const IconComponent = item.icon;
+              const hasChildren = item.children && item.children.length > 0;
+              const isExpanded = expandedSections.includes(item.id);
+              const active = item.href ? isActive(item.href) : item.children?.some(c => isActive(c.href));
+
               return (
                 <li key={item.id}>
-                  <Link
-                    href={item.href}
-                    className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-lg font-inter font-medium transition-all duration-200 ${isActive(item.href)
-                      ? "bg-white text-[#004BB5] shadow-lg"
-                      : "text-blue-100 hover:bg-blue-500 hover:text-white"
-                      }`}
-                    onClick={() => setIsOpen(false)}
-                    title={isCollapsed ? item.label : undefined}
-                  >
-                    <IconComponent className="w-5 h-5" />
-                    {!isCollapsed && <span>{item.label}</span>}
-                  </Link>
+                  {hasChildren ? (
+                    <>
+                      <button
+                        onClick={() => toggleSection(item.id)}
+                        className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg font-inter font-medium transition-all duration-200 ${active
+                          ? "bg-slate-100 text-slate-900"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                          }`}
+                        title={isCollapsed ? item.label : undefined}
+                      >
+                        <div className={`flex items-center ${isCollapsed ? '' : 'gap-3'}`}>
+                          <IconComponent className={`w-5 h-5 ${active ? "text-slate-900" : "text-slate-400"}`} />
+                          {!isCollapsed && <span className="truncate">{item.label}</span>}
+                        </div>
+                        {!isCollapsed && (
+                          isExpanded
+                            ? <ExpandMoreIcon className="w-4 h-4 text-slate-400" />
+                            : <ChevronRightIcon className="w-4 h-4 text-slate-400" />
+                        )}
+                      </button>
+                      {!isCollapsed && isExpanded && (
+                        <ul className="ml-6 mt-1 space-y-1 border-l border-slate-200 pl-4">
+                          {item.children?.map(child => {
+                            const childActive = isActive(child.href);
+                            return (
+                              <li key={child.id}>
+                                <Link
+                                  href={child.href}
+                                  className={`block px-3 py-2 rounded-lg text-sm font-inter transition-all duration-200 ${childActive
+                                    ? "bg-slate-900 text-white shadow-md"
+                                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                    }`}
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  <span className="truncate">{child.label}</span>
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href || "#"}
+                      className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-lg font-inter font-medium transition-all duration-200 ${active
+                        ? "bg-slate-900 text-white shadow-md"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                        }`}
+                      onClick={() => setIsOpen(false)}
+                      title={isCollapsed ? item.label : undefined}
+                    >
+                      <IconComponent className={`w-5 h-5 ${active ? "text-white" : "text-slate-400"}`} />
+                      {!isCollapsed && <span className="truncate">{item.label}</span>}
+                    </Link>
+                  )}
                 </li>
               );
             })}
           </ul>
         </nav>
-
-        {/* User Profile Section with Dropdown */}
-        <div className="mt-auto p-4 relative">
-          <button
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition-all duration-200`}
-          >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#004BB5] to-[#1C84EE] flex items-center justify-center text-black font-bold text-sm shadow-md border border-white border-opacity-20">
-              {userName.charAt(0).toUpperCase()}
-            </div>
-            {!isCollapsed && (
-              <>
-                <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-semibold truncate font-inter text-gray-900">
-                    {userName}
-                  </p>
-                  <p className="text-xs text-blue-200 truncate">{userEmail}</p>
-                </div>
-                <ExpandMoreIcon
-                  className={`w-5 h-5 text-blue-200 transition-transform duration-200 ${isProfileMenuOpen ? 'rotate-180' : ''}`}
-                />
-              </>
-            )}
-          </button>
-
-          {/* Profile Dropdown Menu */}
-          {isProfileMenuOpen && (
-            <div className="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 border border-gray-100">
-              <div className="py-1">
-                <Link
-                  href="/admin/settings"
-                  className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-inter"
-                  onClick={() => setIsProfileMenuOpen(false)}
-                >
-                  <SettingsIcon className="w-5 h-5 text-gray-400" />
-                  Settings
-                </Link>
-                <div className="h-px bg-gray-100 my-1 confirm-logout-separator"></div>
-                <button
-                  onClick={onLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors font-inter"
-                >
-                  <LogoutIcon className="w-5 h-5 text-red-500" />
-                  Logout
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
       </aside>
-
-      {/* Main Content Spacer for Desktop */}
-      <div className={`hidden lg:block ${isCollapsed ? 'w-20' : 'w-64'}`} />
     </>
   );
 }

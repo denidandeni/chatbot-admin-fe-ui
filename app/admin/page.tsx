@@ -1,12 +1,13 @@
 "use client";
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import PageHeader from "../components/PageHeader";
 import { useEffect, useState } from "react";
 import { getChatbots } from "@/services/chatbot";
 import { getOrganizations } from "@/services/organization";
 import { getAllUsers } from "@/services/user";
 import { useToastContext } from "../components/ToastProvider";
-import MenuIcon from '@mui/icons-material/Menu';
+
 
 export default function AdminDashboard() {
   const [chatbotCount, setChatbotCount] = useState(0);
@@ -40,311 +41,67 @@ export default function AdminDashboard() {
 
   return (
     <ProtectedRoute>
-      <div className="p-8">
-        <div className="mb-6 flex items-center gap-4">
-          <button
-            onClick={() => {
-              const event = new CustomEvent('toggleSidebar');
-              window.dispatchEvent(event);
-            }}
-            className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            title="Toggle Sidebar"
-          >
-            <MenuIcon className="text-gray-700" />
-          </button>
-          <h1 className="text-3xl font-semibold font-inter text-gray-900">
-            Dashboard
-          </h1>
-        </div>
+      <div>
+        <PageHeader
+          title="Dashboard"
+          breadcrumbItems={[
+            { label: "Pages" },
+            { label: "Dashboard", href: "/admin" }
+          ]}
+        />
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Chatbots Card */}
-          <div
-            style={{
-              background: "white",
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.05)",
-              borderRadius: 16,
-              padding: 16,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            {/* Icon Circle */}
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                minWidth: "60px",
-                background: "linear-gradient(135deg, #004BB5 0%, #1C84EE 100%)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4 transition-shadow duration-300">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12h-8v-2h8v2zm0-3h-8V9h8v2zm0-3h-8V6h8v2z" />
               </svg>
             </div>
-
-            {/* Text Section */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                textAlign: "right",
-                flex: 1,
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "400",
-                  fontFamily: "Poppins, sans-serif",
-                  color: "#111827",
-                  margin: "0 0 4px 0",
-                }}
-              >
-                {chatbotCount}
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  fontFamily: "Poppins, sans-serif",
-                  color: "#6B7280",
-                  margin: "0",
-                }}
-              >
-                AI Agents
-              </p>
+            <div className="flex flex-col items-end flex-1">
+              <p className="text-3xl font-bold text-gray-900 font-inter leading-none mb-1">{chatbotCount}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">AI Agents</p>
             </div>
           </div>
 
           {/* Organizations Card */}
-          <div
-            style={{
-              background: "white",
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.05)",
-              borderRadius: 16,
-              padding: 16,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            {/* Icon Circle */}
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                minWidth: "60px",
-                background: "linear-gradient(135deg, #059669 0%, #10B981 100%)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4 transition-shadow duration-300">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-400 flex items-center justify-center text-white">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M16 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4M9 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
               </svg>
             </div>
-
-            {/* Text Section */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                textAlign: "right",
-                flex: 1,
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "400",
-                  fontFamily: "Poppins, sans-serif",
-                  color: "#111827",
-                  margin: "0 0 4px 0",
-                }}
-              >
-                {organizationCount}
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  fontFamily: "Poppins, sans-serif",
-                  color: "#6B7280",
-                  margin: "0",
-                }}
-              >
-                Total Organization
-              </p>
+            <div className="flex flex-col items-end flex-1">
+              <p className="text-3xl font-bold text-gray-900 font-inter leading-none mb-1">{organizationCount}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Organization</p>
             </div>
           </div>
 
           {/* Conversations Card */}
-          <div
-            style={{
-              background: "white",
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.05)",
-              borderRadius: 16,
-              padding: 16,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            {/* Icon Circle */}
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                minWidth: "60px",
-                background: "linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4 transition-shadow duration-300">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center text-white">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
             </div>
-
-            {/* Text Section */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                textAlign: "right",
-                flex: 1,
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "400",
-                  fontFamily: "Inter, sans-serif",
-                  color: "#111827",
-                  margin: "0 0 4px 0",
-                }}
-              >
-                {conversationCount}
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  fontFamily: "Inter, sans-serif",
-                  color: "#6B7280",
-                  margin: "0",
-                }}
-              >
-                Total Conversations
-              </p>
+            <div className="flex flex-col items-end flex-1">
+              <p className="text-3xl font-bold text-gray-900 font-inter leading-none mb-1">{conversationCount}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Conversations</p>
             </div>
           </div>
 
           {/* Chat Resolved Card */}
-          <div
-            style={{
-              background: "white",
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.05)",
-              borderRadius: 16,
-              padding: 16,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            {/* Icon Circle */}
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                minWidth: "60px",
-                background: "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4 transition-shadow duration-300">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-teal-400 flex items-center justify-center text-white">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-
-            {/* Text Section */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                textAlign: "right",
-                flex: 1,
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "400",
-                  fontFamily: "Inter, sans-serif",
-                  color: "#111827",
-                  margin: "0 0 4px 0",
-                }}
-              >
-                65%
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  fontFamily: "Inter, sans-serif",
-                  color: "#6B7280",
-                  margin: "0",
-                }}
-              >
-                Chat Resolved
-              </p>
+            <div className="flex flex-col items-end flex-1">
+              <p className="text-3xl font-bold text-gray-900 font-inter leading-none mb-1">65%</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Chat Resolved</p>
             </div>
           </div>
         </div>
@@ -352,7 +109,7 @@ export default function AdminDashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Credit Usage Card */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-8 pb-2 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 font-inter">Credit Usage</h3>
               <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
@@ -382,7 +139,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
               <div>
                 <p className="text-xs text-gray-500 font-inter mb-1">Used</p>
                 <p className="text-lg font-semibold text-gray-900 font-inter">47.3K</p>
@@ -399,7 +156,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Topic Analysis Card */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-8 pb-2 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 font-inter">Topic Analysis</h3>
               <div className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-medium">
@@ -492,7 +249,7 @@ export default function AdminDashboard() {
           {/* Agent Performance Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Agent Card 1 */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 font-inter mb-2">Customer Support Bot</h3>
                 <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
@@ -502,7 +259,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-600 font-inter mb-4 line-clamp-2">
                 Handles general inquiries and provides customer support assistance
               </p>
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500 font-inter">Total Conversations</span>
                   <span className="text-lg font-semibold text-blue-600 font-inter">342</span>
@@ -511,7 +268,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Agent Card 2 */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 font-inter mb-2">Sales Assistant</h3>
                 <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
@@ -521,7 +278,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-600 font-inter mb-4 line-clamp-2">
                 Helps with product recommendations and sales inquiries
               </p>
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500 font-inter">Total Conversations</span>
                   <span className="text-lg font-semibold text-blue-600 font-inter">289</span>
@@ -530,7 +287,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Agent Card 3 */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 font-inter mb-2">Technical Support</h3>
                 <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
@@ -540,7 +297,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-600 font-inter mb-4 line-clamp-2">
                 Provides technical assistance and troubleshooting guidance
               </p>
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500 font-inter">Total Conversations</span>
                   <span className="text-lg font-semibold text-blue-600 font-inter">156</span>
@@ -549,7 +306,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Agent Card 4 */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 font-inter mb-2">Billing Assistant</h3>
                 <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
@@ -559,7 +316,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-600 font-inter mb-4 line-clamp-2">
                 Handles billing questions and payment-related inquiries
               </p>
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500 font-inter">Total Conversations</span>
                   <span className="text-lg font-semibold text-blue-600 font-inter">203</span>

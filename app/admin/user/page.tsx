@@ -16,6 +16,7 @@ import {
 import { getOrganizations, Organization } from "@/services/organization";
 import { isAdmin, isSuperAdmin } from "@/services/tokenUtils";
 import { useToastContext } from "../../components/ToastProvider";
+import PageHeader from "../../components/PageHeader";
 
 export default function UserPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -136,50 +137,47 @@ export default function UserPage() {
   };
 
   return (
-    <div className="p-8 bg-slate-100 min-h-screen">
-      <div className="bg-white rounded-xl p-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold font-inter text-gray-900">
-              User Management
-            </h1>
-            <p className="text-sm text-gray-600 mt-2 font-inter">
-              Create and manage user accounts
-            </p>
-          </div>
+    <div>
 
-          <button
-            onClick={() => handleOpenForm()}
-            className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+      <PageHeader
+        title="User Management"
+        description="Create and manage user accounts"
+        breadcrumbItems={[
+          { label: "Pages" },
+          { label: "Users", href: "/admin/user" }
+        ]}
+      >
+        <button
+          onClick={() => handleOpenForm()}
+          className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create New User
-          </button>
-        </div>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Create New User
+        </button>
+      </PageHeader>
 
-        {/* Table */}
-        <UserTable
-          users={users}
-          isLoading={isLoadingUsers}
-          onEdit={handleOpenForm}
-          onDelete={handleDelete}
-        />
-      </div>
+      {/* Table */}
+      <UserTable
+        users={users}
+        isLoading={isLoadingUsers}
+        onEdit={handleOpenForm}
+        onDelete={handleDelete}
+      />
+
 
       {/* Slide Sheet for Form */}
-      <SlideSheet 
-        isOpen={isFormOpen} 
+      <SlideSheet
+        isOpen={isFormOpen}
         onClose={handleCloseForm}
         title={selectedUser ? "Edit User" : "Create New User"}
         width="400px"
@@ -204,6 +202,7 @@ export default function UserPage() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
-    </div>
+    </div >
   );
 }
+

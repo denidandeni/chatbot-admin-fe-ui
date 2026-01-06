@@ -44,23 +44,23 @@ export default function UserTable({
     <div className="overflow-x-auto relative">
       <table className="w-full min-w-max">
         <thead>
-          <tr className="border-b border-gray-200">
+          <tr className="border-b border-gray-200 bg-gray-50">
             {/* TODO: Enable profile column when backend endpoint is ready */}
             {false && <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap sticky left-0 bg-white z-10 shadow-[4px_0_6px_-2px_rgba(0,0,0,0.1)]">Profile</th>}
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap sticky left-0 bg-white z-10 shadow-[4px_0_6px_-2px_rgba(0,0,0,0.1)]">Name</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap">Email</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap">Role</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap sticky left-0 bg-gray-50 z-10 shadow-[4px_0_6px_-2px_rgba(0,0,0,0.1)]">Name</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap">Email</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap">Role</th>
             {showOrganizationColumn && (
-              <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap w-48">Organization</th>
+              <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap w-48">Organization</th>
             )}
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap w-80">Chatbots Assigned</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap">Created At</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter whitespace-nowrap sticky right-0 bg-white z-10 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)]">Actions</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap w-80">Chatbots Assigned</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap">Created At</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter whitespace-nowrap sticky right-0 bg-gray-50 z-10 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)]">Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
+            <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
               {/* Profile Image - TODO: Enable when backend endpoint is ready */}
               {false && (
                 <td className="py-4 px-4 sticky left-0 bg-white z-10">
@@ -82,23 +82,23 @@ export default function UserTable({
                   </div>
                 </td>
               )}
-              
+
               {/* Name */}
-              <td className="py-4 px-4 text-gray-900 font-inter whitespace-nowrap sticky left-0 bg-white z-10">{user.name}</td>
-              <td className="py-4 px-4 text-gray-600 font-inter text-sm whitespace-nowrap">{user.email}</td>
-              <td className="py-4 px-4 text-gray-600 font-inter text-sm whitespace-nowrap">
+              <td className="py-4 px-6 text-gray-900 font-inter whitespace-nowrap sticky left-0 bg-white z-10">{user.name}</td>
+              <td className="py-4 px-6 text-gray-600 font-inter text-sm whitespace-nowrap">{user.email}</td>
+              <td className="py-4 px-6 text-gray-600 font-inter text-sm whitespace-nowrap">
                 <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
                   {user.role}
                 </span>
               </td>
               {showOrganizationColumn && (
-                <td className="py-4 px-4 text-gray-600 font-inter text-sm w-48">
+                <td className="py-4 px-6 text-gray-600 font-inter text-sm w-48">
                   <div className="max-w-[12rem] truncate" title={user.organization_name}>
                     {(user.organization_name)}
                   </div>
                 </td>
               )}
-              <td className="py-4 px-4 text-gray-600 font-inter text-sm">
+              <td className="py-4 px-6 text-gray-600 font-inter text-sm">
                 {user.assigned_chatbots && user.assigned_chatbots.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
                     {user.assigned_chatbots.map((chatbot) => (
@@ -114,10 +114,10 @@ export default function UserTable({
                   <span className="text-gray-400 italic">No chatbots assigned</span>
                 )}
               </td>
-              <td className="py-4 px-4 text-gray-600 font-inter text-sm whitespace-nowrap">
+              <td className="py-4 px-6 text-gray-600 font-inter text-sm whitespace-nowrap">
                 {(user.created_at || user.createdAt) ? formatDate(user.created_at || user.createdAt || "") : "-"}
               </td>
-              <td className="py-4 px-4 sticky right-0 bg-white z-10">
+              <td className="py-4 px-6 sticky right-0 bg-white z-10">
                 <div className="flex gap-2 whitespace-nowrap">
                   <button
                     onClick={() => onEdit(user)}

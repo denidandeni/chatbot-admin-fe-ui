@@ -61,14 +61,14 @@ export default function OrganizationTable({
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-gray-200">
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Profile</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Name</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Status</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Expiry Info</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Description</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Created At</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-900 font-inter">Actions</th>
+          <tr className="border-b border-gray-200 bg-gray-50">
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Profile</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Name</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Status</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Expiry Info</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Description</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Created At</th>
+            <th className="text-left py-4 px-6 font-semibold text-gray-900 font-inter">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -83,9 +83,9 @@ export default function OrganizationTable({
             });
             const statusInfo = getStatusInfo(org);
             return (
-              <tr key={org.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
+              <tr key={org.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
                 {/* Profile Image */}
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-300">
                     {(org.profile_image_url || org.profile_picture_url) ? (
                       <Image
@@ -106,10 +106,10 @@ export default function OrganizationTable({
                 </td>
 
                 {/* Name */}
-                <td className="py-4 px-4 text-gray-900 font-inter font-medium">{org.name}</td>
+                <td className="py-4 px-6 text-gray-900 font-inter font-medium">{org.name}</td>
 
                 {/* Status */}
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   <div className="flex items-center gap-2">
                     <span className={`w-3 h-3 rounded-full ${statusInfo.color}`}></span>
                     <span className={`text-sm font-medium font-inter ${statusInfo.textColor}`}>
@@ -119,7 +119,7 @@ export default function OrganizationTable({
                 </td>
 
                 {/* Expiry Info */}
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   {org.expiry_date ? (
                     <div className="space-y-1">
                       <div className="text-sm text-gray-600 font-inter">
@@ -142,17 +142,17 @@ export default function OrganizationTable({
                 </td>
 
                 {/* Description */}
-                <td className="py-4 px-4 text-gray-600 font-inter text-sm max-w-xs truncate">
+                <td className="py-4 px-6 text-gray-600 font-inter text-sm max-w-xs truncate">
                   {org.description || "-"}
                 </td>
 
                 {/* Created At */}
-                <td className="py-4 px-4 text-gray-600 font-inter text-sm">
+                <td className="py-4 px-6 text-gray-600 font-inter text-sm">
                   {(org.created_at || org.createdAt) ? formatDate(org.created_at || org.createdAt || "") : "-"}
                 </td>
 
                 {/* Actions */}
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   <div className="flex gap-2 flex-wrap">
                     {onEdit && (
                       <button

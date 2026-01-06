@@ -12,6 +12,17 @@ const config: Config = {
       },
       colors: {
         'input-bg': '#EEF6FF',
+        primary: 'var(--color-primary)',
+        'primary-foreground': 'var(--color-primary-foreground)',
+        surface: 'var(--color-surface)',
+        'surface-foreground': 'var(--color-surface-foreground)',
+        border: 'var(--color-border)',
+      },
+      borderRadius: {
+        card: 'var(--radius-card)',
+      },
+      spacing: {
+        'page': 'var(--padding-page)',
       },
     },
   },

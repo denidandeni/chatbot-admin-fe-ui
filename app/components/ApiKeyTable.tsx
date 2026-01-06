@@ -17,7 +17,7 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
   const [organizations, setOrganizations] = useState<OrganizationOption[]>([]);
   const [selectedOrganizationId, setSelectedOrganizationId] = useState<string>("");
   const [isLoadingOrganizations, setIsLoadingOrganizations] = useState(false);
-  
+
   const [deleteTarget, setDeleteTarget] = useState<ApiKeyInfo | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { showToast } = useToastContext();
@@ -55,15 +55,15 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
     try {
       setIsLoading(true);
       console.log("📋 Fetching all API keys from organization...");
-      
+
       // Fetch API keys for entire organization (no chatbot_id filter)
       const response = await getApiKeys();
-      
+
       console.log("📊 API Keys received:", {
         total: response.total,
         keysCount: response.keys?.length || 0,
       });
-      
+
       setApiKeys(response.keys || []);
     } catch (error: any) {
       console.error("❌ Error loading API keys:", error);
@@ -93,10 +93,10 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
       const orgId = selectedOrganizationId || undefined;
       await generateApiKey("", keyName, orgId);
       showToast("API Key generated successfully", "success");
-      
+
       // Reset form
       setKeyName("");
-      
+
       // Refresh list
       await fetchAllApiKeys();
     } catch (error: any) {
@@ -207,8 +207,9 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
       )}
 
       {/* API Keys Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className="bg-white border-0">
+        <div className="px-0 py-4 border-b border-gray-200 hidden">
+
           <h2 className="text-lg font-semibold text-gray-900">API Keys</h2>
         </div>
 
@@ -221,33 +222,33 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                     Key Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                     API Key
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                     Expires
                   </th>
                   {!isReadOnly && (
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-inter text-gray-900">
                       Actions
                     </th>
                   )}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white">
                 {apiKeys.map((apiKey) => (
-                  <tr key={apiKey.id} className="hover:bg-gray-50">
+                  <tr key={apiKey.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {apiKey.name}
                     </td>

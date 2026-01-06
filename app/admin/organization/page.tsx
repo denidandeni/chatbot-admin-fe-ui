@@ -17,6 +17,7 @@ import {
 } from "@/services/organization";
 import { useToastContext } from "../../components/ToastProvider";
 import { getLoggedInUser, isSuperAdmin } from "@/services/tokenUtils";
+import PageHeader from "../../components/PageHeader";
 
 export default function OrganizationPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -33,19 +34,19 @@ export default function OrganizationPage() {
   // Load organizations
   useEffect(() => {
     console.log("🔄 useEffect triggered with refreshKey:", refreshKey);
-    
+
     // Check if user is super admin based on role
     const userIsSuperAdmin = isSuperAdmin();
     setIsSuper(userIsSuperAdmin);
-    
+
     const user = getLoggedInUser();
-    console.log("Organization page - User info:", { 
+    console.log("Organization page - User info:", {
       role: user?.role,
       isSuperAdmin: userIsSuperAdmin,
       hasOrgId: !!user?.organization_id,
       orgId: user?.organization_id
     });
-    
+
     fetchOrganizations();
   }, [refreshKey]); // Re-fetch when refreshKey changes
 
@@ -99,23 +100,23 @@ export default function OrganizationPage() {
 
   const handleRefreshOrganization = async () => {
     console.log("🔄 handleRefreshOrganization called");
-    
+
     // Force re-fetch by incrementing refreshKey
     setRefreshKey(prev => {
       console.log("🔑 Setting refreshKey from", prev, "to", prev + 1);
       return prev + 1;
     });
-    
+
     // Wait for backend and state to update
     console.log("⏳ Waiting 500ms for backend to complete...");
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // If editing an organization, refresh its data too
     if (selectedOrganization?.id) {
       console.log("📌 Refreshing selected organization:", selectedOrganization.id);
       const updatedOrgs = await getOrganizations();
       console.log("📋 All organizations after refresh:", updatedOrgs);
-      
+
       const updatedOrg = updatedOrgs.find((org: Organization) => org.id === selectedOrganization.id);
       if (updatedOrg) {
         console.log("✅ Found updated organization:", {
@@ -126,7 +127,7 @@ export default function OrganizationPage() {
           expiry_date: updatedOrg.expiry_date,
         });
         // Create new object reference to trigger React re-render
-        setSelectedOrganization({...updatedOrg});
+        setSelectedOrganization({ ...updatedOrg });
         console.log("🎯 selectedOrganization updated");
       } else {
         console.warn("⚠️ Organization not found in updated list");
@@ -143,7 +144,7 @@ export default function OrganizationPage() {
         console.log("📝 Updating organization:", selectedOrganization.id);
         await updateOrganization(selectedOrganization.id, data);
         showToast("Organization updated successfully", "success");
-        
+
         // Refresh list and close form
         console.log("🔄 Refreshing organizations after update...");
         setRefreshKey(prev => prev + 1); // Trigger refresh
@@ -152,14 +153,14 @@ export default function OrganizationPage() {
       } else {
         // Create new organization
         const response = await createOrganization(data);
-        
+
         // If admin was created, show credentials modal
         if (response.admin) {
           setAdminCredentials({
             orgName: response.organization.name,
             admin: response.admin,
           });
-          
+
           // Also log to console for easy copy
           console.log("=".repeat(60));
           console.log("🎉 ORGANIZATION & ADMIN CREATED SUCCESSFULLY");
@@ -175,7 +176,7 @@ export default function OrganizationPage() {
         } else {
           showToast("Organization created successfully", "success");
         }
-        
+
         // Refresh list and close form
         console.log("🔄 Refreshing organizations after create...");
         setRefreshKey(prev => prev + 1); // Trigger refresh
@@ -187,16 +188,16 @@ export default function OrganizationPage() {
       console.error("Error response:", error?.response);
       console.error("Error response data:", error?.response?.data);
       console.error("Error response detail:", error?.response?.data?.detail);
-      
+
       // Handle validation errors (422)
       let errorMessage = "Failed to save organization";
-      
+
       if (error?.response?.status === 422) {
         // FastAPI validation error format
         const detail = error.response.data?.detail;
         console.log("📋 Validation errors:", detail);
         console.log("📋 Validation errors (JSON):", JSON.stringify(detail, null, 2));
-        
+
         if (Array.isArray(detail)) {
           // Extract field errors
           const fieldErrors = detail.map((err: any) => {
@@ -212,7 +213,7 @@ export default function OrganizationPage() {
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
+
       showToast(errorMessage, "error");
       throw error;
     }
@@ -240,52 +241,50 @@ export default function OrganizationPage() {
   };
 
   return (
-    <div className="p-8 bg-slate-100 min-h-screen">
-      <div className="bg-white rounded-xl p-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold font-inter text-gray-900">
-              Tenant Management
-            </h1>
-            <p className="text-sm text-gray-600 mt-2 font-inter">
-              {isSuper 
-                ? "Create and manage organizations" 
-                : "View your organization details"}
-            </p>
-          </div>
+    <div>
 
-          {/* Only show Create button for super admin */}
-          {isSuper && (
-            <button
-              onClick={() => handleOpenForm()}
-              className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+      {/* Header */}
+      <PageHeader
+        title="Tenant Management"
+        description={isSuper
+          ? "Create and manage organizations"
+          : "View your organization details"}
+        breadcrumbItems={[
+          { label: "Pages" },
+          { label: "Organization", href: "/admin/organization" }
+        ]}
+      >
+        {/* Only show Create button for super admin */}
+        {isSuper && (
+          <button
+            onClick={() => handleOpenForm()}
+            className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Create New Organization
-            </button>
-          )}
-        </div>
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create New Organization
+          </button>
+        )}
+      </PageHeader>
 
-        {/* Table */}
-        <OrganizationTable
-          organizations={organizations}
-          isLoading={isLoadingOrganizations}
-          onEdit={isSuper ? handleOpenForm : undefined}
-          onDelete={isSuper ? handleDelete : undefined}
-          onRefresh={fetchOrganizations}
-        />
-      </div>
+      {/* Table */}
+      <OrganizationTable
+        organizations={organizations}
+        isLoading={isLoadingOrganizations}
+        onEdit={isSuper ? handleOpenForm : undefined}
+        onDelete={isSuper ? handleDelete : undefined}
+        onRefresh={fetchOrganizations}
+      />
+
 
       {/* Slide Sheet for Form */}
       <SlideSheet
