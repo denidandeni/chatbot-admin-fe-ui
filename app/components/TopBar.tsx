@@ -68,11 +68,11 @@ export default function TopBar({ onLogout }: TopBarProps) {
                     <input
                         type="text"
                         placeholder="Search documents, bots, or settings..."
-                        className="w-full pl-10 pr-12 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-inter"
+                        className="w-full pl-10 pr-12 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-inter placeholder:text-gray-600"
                     />
                     <div className="absolute inset-y-0 right-3 flex items-center gap-1">
                         <kbd className="px-1.5 py-0.5 rounded border border-gray-200 bg-white text-[10px] font-semibold text-gray-400 flex items-center gap-0.5">
-                            <KeyboardCommandKeyIcon className="w-3 h-3" /> K
+                            <KeyboardCommandKeyIcon className="w-2 h-2" /> K
                         </kbd>
                     </div>
                 </div>

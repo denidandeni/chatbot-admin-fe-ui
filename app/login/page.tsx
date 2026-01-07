@@ -122,8 +122,6 @@ export default function LoginPage() {
               {loading ? "Loading..." : "Sign In"}
             </button>
           </form>
-
-          <div className="mt-8 h-1 bg-blue-600 rounded-full mx-auto w-12"></div>
         </div>
       </div>
     </div>
