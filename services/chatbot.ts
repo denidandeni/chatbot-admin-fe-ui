@@ -139,6 +139,53 @@ export async function getChatbots(): Promise<Chatbot[]> {
  * Get single chatbot by ID
  */
 export async function getChatbotById(id: string): Promise<Chatbot | null> {
+  // Handle mock IDs directly
+  if (id.startsWith("mock-bot-")) {
+    const mockBots = [
+      {
+        id: "mock-bot-1",
+        name: "Customer Support Bot",
+        description: "Handles general inquiries",
+        model: "gpt-4",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        personality: "Friendly and helpful",
+        organization_id: "static-org-123"
+      },
+      {
+        id: "mock-bot-2",
+        name: "Sales Assistant",
+        description: "Helps with product recommendations",
+        model: "gpt-3.5-turbo",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        personality: "Professional and persuasive",
+        organization_id: "static-org-123"
+      },
+      {
+        id: "mock-bot-3",
+        name: "Technical Support",
+        description: "Provides technical assistance",
+        model: "gpt-4",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        personality: "Technical and precise",
+        organization_id: "static-org-123"
+      },
+      {
+        id: "mock-bot-4",
+        name: "Billing Assistant",
+        description: "Handles billing questions",
+        model: "gpt-3.5-turbo",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        personality: "Clear and efficient",
+        organization_id: "static-org-123"
+      }
+    ];
+    return mockBots.find(b => b.id === id) || null;
+  }
+
   try {
     const res = await api.get(`/api/chatbots/${id}`);
     // Handle both direct return and nested structure

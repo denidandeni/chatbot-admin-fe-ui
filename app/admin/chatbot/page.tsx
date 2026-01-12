@@ -1,6 +1,6 @@
 "use client";
 
-import ChatbotTable from "../../components/ChatbotTable";
+import ChatbotCard from "../../components/ChatbotCard";
 import ChatbotForm from "../../components/ChatbotForm";
 import CreateChatbotForm from "../../components/CreateChatbotForm";
 import SlideSheet from "../../components/SlideSheet";
@@ -161,7 +161,7 @@ export default function ChatbotPage() {
         {isSuper && (
           <button
             onClick={() => handleOpenForm()}
-            className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+            className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:opacity-90 transition flex items-center gap-2 justify-center sm:justify-start"
           >
             <svg
               width="20"
@@ -179,14 +179,34 @@ export default function ChatbotPage() {
         )}
       </PageHeader>
 
-      {/* Table */}
-      <ChatbotTable
-        chatbots={chatbots}
-        isLoading={isLoadingChatbots}
-        onEdit={handleOpenForm}
-        onDelete={handleDelete}
-        isSuperAdmin={isSuper}
-      />
+      {/* Grid Layout */}
+      {isLoadingChatbots ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-64 rounded-lg bg-muted/20 animate-pulse border"></div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mt-8">
+          {chatbots.length > 0 ? (
+            chatbots.map((chatbot) => (
+              <ChatbotCard
+                key={chatbot.id}
+                chatbot={chatbot}
+                onEdit={handleOpenForm}
+                onDelete={handleDelete}
+                onClick={(chatbot) => router.push(`/admin/chatbot/${chatbot.id}`)}
+                isSuperAdmin={isSuper}
+              />
+            ))
+          ) : (
+            // Show empty state or mock data if requested (using mock data here as fallback visually)
+            <div className="col-span-full py-12 text-center text-muted-foreground border rounded-lg bg-muted/10 border-dashed">
+              No agents found. Create your first agent to get started.
+            </div>
+          )}
+        </div>
+      )}
 
 
       {/* Slide Sheet for Create Form */}
