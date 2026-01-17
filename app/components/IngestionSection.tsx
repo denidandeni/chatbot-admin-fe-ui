@@ -84,10 +84,10 @@ export default function IngestionSection({
       availableTables: [],
       selectedTables: [],
     });
-  
+
   const [OpenApiData, setOpenApiData] = useState<OpenApiData>({
     url: "",
-    headers: {Authorization: "Bearer your_token"},
+    headers: { Authorization: "Bearer your_token" },
   });
   const [openApiHeadersText, setOpenApiHeadersText] = useState<string>("");
 
@@ -138,13 +138,13 @@ export default function IngestionSection({
       newSelections.length > 0
         ? newSelections
         : [
-            {
-              file: null,
-              mode: "all",
-              availableTables: [],
-              selectedTables: [],
-            },
-          ]
+          {
+            file: null,
+            mode: "all",
+            availableTables: [],
+            selectedTables: [],
+          },
+        ]
     );
   };
 
@@ -214,10 +214,8 @@ export default function IngestionSection({
       );
     } catch (error) {
       setUploadError(
-        `Failed to retrieve tables for ${
-          fileSelection.file.name
-        }. Please ensure the file is a valid SQL file. : ${
-          (error as Error).message
+        `Failed to retrieve tables for ${fileSelection.file.name
+        }. Please ensure the file is a valid SQL file. : ${(error as Error).message
         }`
       );
     } finally {
@@ -243,8 +241,7 @@ export default function IngestionSection({
       );
     } catch (error) {
       setUploadError(
-        `Failed to retrieve tables for connector. Please ensure the connection details are correct. : ${
-          (error as Error).message
+        `Failed to retrieve tables for connector. Please ensure the connection details are correct. : ${(error as Error).message
         }`
       );
     } finally {
@@ -437,8 +434,8 @@ export default function IngestionSection({
             }, {} as SelectedTables),
             onUploadProgress
           );
-          
-        }else {
+
+        } else {
           response = await ingestUnstructuredFile(
             validFiles,
             chatbotId,
@@ -594,13 +591,12 @@ export default function IngestionSection({
                   </div>
                   <div className="flex items-center gap-2 mt-1">
                     <span
-                      className={`text-xs px-2 py-0.5 rounded font-inter ${
-                        item.type === "structured"
+                      className={`text-xs px-2 py-0.5 rounded font-inter ${item.type === "structured"
                           ? "bg-blue-100 text-blue-700"
                           : item.type === "unstructured"
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-green-100 text-green-700"
-                      }`}
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-green-100 text-green-700"
+                        }`}
                     >
                       {item.type === "connector" ? item.source : item.type}
                     </span>
@@ -617,11 +613,10 @@ export default function IngestionSection({
                 </div>
                 <div className="ml-3">
                   <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium font-inter ${
-                      item.status === "success"
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium font-inter ${item.status === "success"
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
-                    }`}
+                      }`}
                   >
                     {item.status === "success" ? "✓ Success" : "✗ Failed"}
                   </span>
@@ -852,7 +847,7 @@ export default function IngestionSection({
                         type="button"
                         onClick={() => retrieveTablesForFile(index)}
                         disabled={uploading || !fileSelection.file}
-                        className="w-full px-3 py-2 bg-blue-600 text-white text-sm font-inter rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-3 py-2 bg-slate-900 text-white text-sm font-inter rounded-lg hover:bg-black transition disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {uploading ? "Retrieving..." : "Retrieve Tables"}
                       </button>
@@ -873,7 +868,7 @@ export default function IngestionSection({
                               disabled={uploading}
                             >
                               {fileSelection.selectedTables.length ===
-                              fileSelection.availableTables.length
+                                fileSelection.availableTables.length
                                 ? "Deselect All"
                                 : "Select All"}
                             </button>
@@ -1129,7 +1124,7 @@ export default function IngestionSection({
                 type="button"
                 onClick={() => retrieveTablesForConnector()}
                 disabled={uploading || !connectorData}
-                className="w-full px-3 py-2 bg-blue-600 text-white text-sm font-inter rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2 bg-slate-900 text-white text-sm font-inter rounded-lg hover:bg-black transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploading ? "Retrieving..." : "Retrieve Tables"}
               </button>
@@ -1150,7 +1145,7 @@ export default function IngestionSection({
                       disabled={uploading}
                     >
                       {connectorTableSelection.selectedTables.length ===
-                      connectorTableSelection.availableTables.length
+                        connectorTableSelection.availableTables.length
                         ? "Deselect All"
                         : "Select All"}
                     </button>
@@ -1228,7 +1223,7 @@ export default function IngestionSection({
             </div>
             {/* Headers Input */}
             <div>
-              <label className="block text-sm font-medium font-inter text-gray-900 mb-2"> 
+              <label className="block text-sm font-medium font-inter text-gray-900 mb-2">
                 Headers (optional)
               </label>
               <textarea
@@ -1261,7 +1256,7 @@ export default function IngestionSection({
           </div>
         )}
 
-                {/* Progress Bar */}
+        {/* Progress Bar */}
         {uploading && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm font-inter text-gray-600">
@@ -1269,8 +1264,8 @@ export default function IngestionSection({
                 {uploadProgress < 50
                   ? "Uploading file..."
                   : uploadProgress < 100
-                  ? "Processing and embedding data..."
-                  : "Finalizing..."}
+                    ? "Processing and embedding data..."
+                    : "Finalizing..."}
               </span>
               <span className="font-semibold">{uploadProgress}%</span>
             </div>

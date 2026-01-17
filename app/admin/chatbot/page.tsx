@@ -147,35 +147,34 @@ export default function ChatbotPage() {
     <div>
       {/* Header */}
       <PageHeader
-        title="All AI Agents"
+        title="AI Agent"
         description={isSuper
           ? "Create and manage your agent instances"
           : "Manage your agent instances"}
         breadcrumbItems={[
           { label: "Pages" },
-          { label: "AI Agents", href: "/admin/chatbot" }
+          { label: "AI Agent", href: "/admin/chatbot" }
         ]}
       >
-        {/* Only show Create button for super admin */}
-        {isSuper && (
-          <button
-            onClick={() => handleOpenForm()}
-            className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:opacity-90 transition flex items-center gap-2 justify-center sm:justify-start"
+        <button
+          onClick={() => router.push("/admin/chatbot/create")}
+          className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-black transition shadow-sm flex items-center gap-2"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create New Agent
-          </button>
-        )}
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Create New Agent
+        </button>
       </PageHeader>
 
       {/* Grid Layout */}

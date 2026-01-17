@@ -236,7 +236,7 @@ export default function UserPage() {
       >
         <button
           onClick={() => handleOpenForm()}
-          className="px-6 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition flex items-center gap-2 justify-center sm:justify-start"
+          className="px-6 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition flex items-center gap-2 justify-center sm:justify-start"
         >
           <svg
             width="20"

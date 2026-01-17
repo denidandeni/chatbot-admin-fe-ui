@@ -240,7 +240,7 @@ export default function UserForm({
                     type="button"
                     onClick={handleUploadImage}
                     disabled={uploadingImage || submitting}
-                    className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-inter font-medium disabled:opacity-50"
+                    className="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-black transition font-inter font-medium disabled:opacity-50"
                   >
                     {uploadingImage ? "Uploading..." : "Upload Image"}
                   </button>
@@ -401,7 +401,7 @@ export default function UserForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition disabled:opacity-50"
           >
             {submitting
               ? "Saving..."

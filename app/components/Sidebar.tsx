@@ -67,6 +67,7 @@ const sidebarItems: SidebarItem[] = [
     children: [
       { id: "connectors", label: "Setup Connectors", href: "/admin/settings/connectors" },
       { id: "api-keys", label: "API Keys", href: "/admin/api-key" },
+      { id: "subscription", label: "Subscription", href: "/admin/settings/subscription" },
     ],
   },
   {

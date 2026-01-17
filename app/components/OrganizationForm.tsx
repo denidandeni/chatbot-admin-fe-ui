@@ -53,7 +53,7 @@ export default function OrganizationForm({
         console.warn("Failed to load subscription plans", err);
       }
     })();
-    
+
     if (organization) {
       console.log("🔄 Organization data updated:", {
         id: organization.id,
@@ -62,7 +62,7 @@ export default function OrganizationForm({
         profile_picture_url: organization.profile_picture_url,
         expiry_date: organization.expiry_date,
       });
-      
+
       // For display only, parse existing expiry from organization if present
       let expiryDateValue = "";
       if (organization.expiry_date) {
@@ -82,7 +82,7 @@ export default function OrganizationForm({
       // For editing, pre-select current plan and duration if available
       setSelectedPlanId(organization.current_plan_id || null);
       setSelectedDurationMonths(organization.current_duration_months || null);
-      
+
       const imageUrl = organization.profile_image_url || organization.profile_picture_url || null;
       console.log("🖼️ Setting profile image to:", imageUrl);
       setProfileImage(imageUrl);
@@ -159,7 +159,7 @@ export default function OrganizationForm({
     console.log("📁 File input changed");
     const file = e.target.files?.[0];
     console.log("📁 Selected file:", file?.name, file?.size, file?.type);
-    
+
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
@@ -167,17 +167,17 @@ export default function OrganizationForm({
         setError("Please select an image file");
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         console.error("❌ File too large:", file.size);
         setError("Image size must be less than 5MB");
         return;
       }
-      
+
       console.log("✅ File validation passed, setting selectedFile");
       setSelectedFile(file);
-      
+
       // Preview image
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -199,26 +199,26 @@ export default function OrganizationForm({
       hasOrganization: !!organization,
       organizationId: organization?.id,
     });
-    
+
     if (!selectedFile || !organization?.id) {
       console.warn("⚠️ Cannot upload - missing file or organization ID");
       showToast("Please select a file and ensure organization is saved first", "warning");
       return;
     }
-    
+
     try {
       setUploadingImage(true);
       console.log("📤 Uploading profile image for organization:", organization.id);
       console.log("🌐 Backend URL:", process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");
-      
+
       const result = await uploadOrganizationProfile(organization.id, selectedFile);
       console.log("✅ Upload success, parsed result:", result);
       console.log("🖼️ Profile image URL:", result.profile_image_url);
-      
+
       setProfileImage(result.profile_image_url);
       setSelectedFile(null);
       showToast("Profile image uploaded successfully!", "success");
-      
+
       // Refresh organization data to get updated profile image
       if (onRefresh) {
         console.log("🔄 Refreshing organization data...");
@@ -233,10 +233,10 @@ export default function OrganizationForm({
         response: err?.response,
         stack: err?.stack,
       });
-      
+
       // Show more user-friendly error messages
       let errorMsg = "Failed to upload image";
-      
+
       if (err?.message?.includes('Network error') || err?.message === 'Network Error') {
         errorMsg = "Cannot connect to server. Please ensure the backend is running at http://localhost:8000";
       } else if (err?.message?.includes('timeout')) {
@@ -248,7 +248,7 @@ export default function OrganizationForm({
       } else if (err?.message) {
         errorMsg = err.message;
       }
-      
+
       setError(errorMsg);
       showToast(errorMsg, "error");
     } finally {
@@ -288,13 +288,13 @@ export default function OrganizationForm({
 
     try {
       setSubmitting(true);
-      
+
       // Prepare payload - remove auto_create_admin fields if editing
       const basePayload = organization
         ? {
-            name: formData.name,
-            description: formData.description,
-          }
+          name: formData.name,
+          description: formData.description,
+        }
         : formData; // Include all fields including auto_create_admin for new org
 
       // Include subscription selection (plan/duration) — backend will persist subscription instead of expired_date
@@ -305,15 +305,15 @@ export default function OrganizationForm({
       };
 
       console.log("📤 Submitting payload:", payload);
-      
+
       await onSubmit(payload);
       onClose();
     } catch (err: any) {
       console.error("Form submission error:", err);
-      
+
       // Handle validation errors from backend
       let errorMessage = "Failed to save organization";
-      
+
       if (err?.response?.status === 422) {
         const detail = err.response.data?.detail;
         if (Array.isArray(detail)) {
@@ -330,7 +330,7 @@ export default function OrganizationForm({
       } else if (err?.message) {
         errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
     } finally {
       setSubmitting(false);
@@ -389,7 +389,7 @@ export default function OrganizationForm({
                     type="button"
                     onClick={handleUploadImage}
                     disabled={uploadingImage || submitting}
-                    className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-inter font-medium disabled:opacity-50"
+                    className="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-black transition font-inter font-medium disabled:opacity-50"
                   >
                     {uploadingImage ? "Uploading..." : "Upload Image"}
                   </button>
@@ -588,13 +588,13 @@ export default function OrganizationForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition disabled:opacity-50"
           >
             {submitting
               ? "Saving..."
               : organization
-              ? "Update Organization"
-              : "Create Organization"}
+                ? "Update Organization"
+                : "Create Organization"}
           </button>
         </div>
       </form>
