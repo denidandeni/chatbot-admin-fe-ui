@@ -349,7 +349,7 @@ export default function AgentDetailPage() {
                         </div>
                         <div className="p-6">
                             <p className="text-sm text-slate-500 mb-6">Choose the data source this agent should use for its responses.</p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                                 {MOCK_KB.map((kb) => (
                                     <label
                                         key={kb.id}

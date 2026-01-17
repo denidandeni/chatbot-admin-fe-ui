@@ -98,7 +98,7 @@ export default function KnowledgeBasePage() {
                 ]}
             />
 
-            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
                 {isLoading ? (
                     // Loading skeletons
                     [...Array(3)].map((_, i) => (
