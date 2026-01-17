@@ -277,13 +277,15 @@ export default function OrganizationPage() {
       </PageHeader>
 
       {/* Table */}
-      <OrganizationTable
-        organizations={organizations}
-        isLoading={isLoadingOrganizations}
-        onEdit={isSuper ? handleOpenForm : undefined}
-        onDelete={isSuper ? handleDelete : undefined}
-        onRefresh={fetchOrganizations}
-      />
+      <div className="mt-8">
+        <OrganizationTable
+          organizations={organizations}
+          isLoading={isLoadingOrganizations}
+          onEdit={isSuper ? handleOpenForm : undefined}
+          onDelete={isSuper ? handleDelete : undefined}
+          onRefresh={fetchOrganizations}
+        />
+      </div>
 
 
       {/* Slide Sheet for Form */}

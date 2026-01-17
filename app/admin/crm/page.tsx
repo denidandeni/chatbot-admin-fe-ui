@@ -17,7 +17,7 @@ export default function CRMPage() {
     const [viewCustomer, setViewCustomer] = useState<any>(null);
 
     return (
-        <div className="space-y-6">
+        <div>
             <PageHeader
                 title="Customer Data"
                 description="Manage your customer interactions, tags, and status in one place."
@@ -45,7 +45,7 @@ export default function CRMPage() {
             </PageHeader>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Customer */}
                 <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white">

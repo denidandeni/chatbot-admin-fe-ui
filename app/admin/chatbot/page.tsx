@@ -145,10 +145,9 @@ export default function ChatbotPage() {
 
   return (
     <div>
-
       {/* Header */}
       <PageHeader
-        title="Agent Management"
+        title="All AI Agents"
         description={isSuper
           ? "Create and manage your agent instances"
           : "Manage your agent instances"}
@@ -181,33 +180,31 @@ export default function ChatbotPage() {
 
       {/* Grid Layout */}
       {isLoadingChatbots ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-64 rounded-lg bg-muted/20 animate-pulse border"></div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mt-8">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-1">
           {chatbots.length > 0 ? (
             chatbots.map((chatbot) => (
               <ChatbotCard
                 key={chatbot.id}
                 chatbot={chatbot}
                 onEdit={handleOpenForm}
-                onDelete={handleDelete}
+                onDelete={(chatbot) => setDeleteTarget(chatbot)}
                 onClick={(chatbot) => router.push(`/admin/chatbot/${chatbot.id}`)}
                 isSuperAdmin={isSuper}
               />
             ))
           ) : (
-            // Show empty state or mock data if requested (using mock data here as fallback visually)
             <div className="col-span-full py-12 text-center text-muted-foreground border rounded-lg bg-muted/10 border-dashed">
               No agents found. Create your first agent to get started.
             </div>
           )}
         </div>
       )}
-
 
       {/* Slide Sheet for Create Form */}
       <SlideSheet
@@ -252,6 +249,6 @@ export default function ChatbotPage() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
-    </div>
+    </div >
   );
 }

@@ -21,7 +21,9 @@ export default function ApiKeyPage() {
         ]}
       />
 
-      <ApiKeyTable isReadOnly={false} />
+      <div className="mt-8">
+        <ApiKeyTable isReadOnly={false} />
+      </div>
     </div>
   );
 }
