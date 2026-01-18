@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { User, CreateUserPayload, uploadUserProfile } from "@/services/user";
+import { Chatbot, getChatbots } from "@/services/chatbot";
 import { Organization } from "@/services/organization";
 import { getLoggedInUser, isAdmin, isSuperAdmin } from "@/services/tokenUtils";
 import { useToastContext } from "./ToastProvider";
@@ -10,7 +11,7 @@ import Image from "next/image";
 interface UserFormProps {
   user: User | null;
   isLoading: boolean;
-  onSubmit: (data: CreateUserPayload) => Promise<void>;
+  onSubmit: (data: CreateUserPayload, assignedChatbotIds?: string[]) => Promise<void>;
   onClose: () => void;
   isCreate?: boolean;
   organizations: Organization[];
@@ -31,6 +32,9 @@ export default function UserForm({
     role: "user",
     organization_id: "",
   });
+  const [availableChatbots, setAvailableChatbots] = useState<Chatbot[]>([]);
+  const [selectedChatbotIds, setSelectedChatbotIds] = useState<string[]>([]);
+  const [loadingChatbots, setLoadingChatbots] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -42,10 +46,24 @@ export default function UserForm({
   const { showToast } = useToastContext();
 
   useEffect(() => {
+    // Fetch chatbots
+    const fetchChatbots = async () => {
+      try {
+        setLoadingChatbots(true);
+        const data = await getChatbots();
+        setAvailableChatbots(data);
+      } catch (err) {
+        console.error("Failed to fetch chatbots", err);
+      } finally {
+        setLoadingChatbots(false);
+      }
+    };
+    fetchChatbots();
+
     // Get logged in user's organization_id
     const loggedInUser = getLoggedInUser();
     const userOrgId = loggedInUser?.organization_id;
-    
+
     if (user) {
       setFormData({
         name: user.name,
@@ -55,6 +73,7 @@ export default function UserForm({
         organization_id: user.organization_id || userOrgId || "",
       });
       setProfileImage(user.profile_image_url || null);
+      setSelectedChatbotIds(user.assigned_chatbots?.map(b => b.id) || []);
     } else {
       setFormData({
         name: "",
@@ -64,6 +83,7 @@ export default function UserForm({
         organization_id: userOrgId || "",
       });
       setProfileImage(null);
+      setSelectedChatbotIds([]);
     }
     setError("");
     setSelectedFile(null);
@@ -87,15 +107,15 @@ export default function UserForm({
         setError("Please select an image file");
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Image size must be less than 5MB");
         return;
       }
-      
+
       setSelectedFile(file);
-      
+
       // Preview image
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -108,7 +128,7 @@ export default function UserForm({
 
   const handleUploadImage = async () => {
     if (!selectedFile || !user?.id) return;
-    
+
     try {
       setUploadingImage(true);
       const result = await uploadUserProfile(user.id, selectedFile);
@@ -159,7 +179,7 @@ export default function UserForm({
       const finalData = shouldLockRoleToUser
         ? { ...formData, role: "user" }
         : formData;
-      await onSubmit(finalData);
+      await onSubmit(finalData, selectedChatbotIds);
       onClose();
     } catch (err: any) {
       setError(err?.message || "Failed to save user");
@@ -220,7 +240,7 @@ export default function UserForm({
                     type="button"
                     onClick={handleUploadImage}
                     disabled={uploadingImage || submitting}
-                    className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-inter font-medium disabled:opacity-50"
+                    className="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-black transition font-inter font-medium disabled:opacity-50"
                   >
                     {uploadingImage ? "Uploading..." : "Upload Image"}
                   </button>
@@ -324,6 +344,43 @@ export default function UserForm({
           </div>
         )}
 
+        {/* Assign AI Agents */}
+        <div>
+          <label className="block text-sm font-medium font-inter text-gray-900 mb-2">
+            Assign AI Agents
+          </label>
+          <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-white">
+            {loadingChatbots ? (
+              <p className="text-sm text-gray-500 p-2">Loading agents...</p>
+            ) : availableChatbots.length === 0 ? (
+              <p className="text-sm text-gray-500 p-2">No agents available.</p>
+            ) : (
+              <div className="space-y-2">
+                {availableChatbots.map((bot) => (
+                  <label key={bot.id} className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedChatbotIds.includes(bot.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedChatbotIds([...selectedChatbotIds, bot.id]);
+                        } else {
+                          setSelectedChatbotIds(selectedChatbotIds.filter(id => id !== bot.id));
+                        }
+                      }}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-inter text-gray-700">{bot.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+          <p className="text-xs text-gray-500 mt-1 font-inter">
+            Select agents this user can access.
+          </p>
+        </div>
+
         {/* Error Message */}
         {error && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -344,13 +401,13 @@ export default function UserForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition disabled:opacity-50"
           >
             {submitting
               ? "Saving..."
               : user
-              ? "Update User"
-              : "Create User"}
+                ? "Update User"
+                : "Create User"}
           </button>
         </div>
       </form>

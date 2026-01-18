@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
@@ -22,6 +23,7 @@ export default function TopBar({ onLogout }: TopBarProps) {
     const [userAvatar, setUserAvatar] = useState("U");
     const [orgName, setOrgName] = useState("AMANI AI");
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
     useEffect(() => {
         const userData = sessionStorage.getItem("user");
@@ -80,11 +82,56 @@ export default function TopBar({ onLogout }: TopBarProps) {
 
             {/* Right Section: Actions & User */}
             <div className="flex items-center gap-2 md:gap-4">
-                <div className="flex items-center gap-1 px-1">
-                    <button className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors relative">
+                <div className="flex items-center gap-1 px-1 relative">
+                    <button
+                        onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                        className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors relative"
+                    >
                         <NotificationsNoneIcon className="w-5 h-5" />
                         <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
                     </button>
+
+                    {/* Notification Popup */}
+                    {isNotificationOpen && (
+                        <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 border border-gray-100 ring-1 ring-black/5 z-50">
+                            <div className="p-4 border-b border-gray-50 flex items-center justify-between">
+                                <h6 className="font-semibold text-sm text-gray-900">Notifications</h6>
+                                <span className="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">3 New</span>
+                            </div>
+                            <div className="max-h-[300px] overflow-y-auto">
+                                <div className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                    <div className="flex justify-between items-start mb-1">
+                                        <p className="text-sm font-medium text-gray-800 line-clamp-1 group-hover:text-blue-600">Database Connection Successful</p>
+                                        <span className="text-[10px] text-gray-400 whitespace-nowrap">Just now</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 line-clamp-2">Your &apos;Production E-commerce DB&apos; has been successfully connected.</p>
+                                </div>
+                                <div className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                    <div className="flex justify-between items-start mb-1">
+                                        <p className="text-sm font-medium text-gray-800 line-clamp-1 group-hover:text-blue-600">Agent Deployment Complete</p>
+                                        <span className="text-[10px] text-gray-400 whitespace-nowrap">2h ago</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 line-clamp-2">Customer Support Agent v2.4 has been deployed to all channels.</p>
+                                </div>
+                                <div className="p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                    <div className="flex justify-between items-start mb-1">
+                                        <p className="text-sm font-medium text-gray-800 line-clamp-1 group-hover:text-blue-600">Token Usage Alert</p>
+                                        <span className="text-[10px] text-gray-400 whitespace-nowrap">5h ago</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 line-clamp-2">You have reached 80% of your monthly token limit.</p>
+                                </div>
+                            </div>
+                            <div className="p-2 bg-gray-50 border-t border-gray-200/50">
+                                <Link
+                                    href="/admin/notifications"
+                                    className="block w-full text-center py-2 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                                    onClick={() => setIsNotificationOpen(false)}
+                                >
+                                    See all notifications
+                                </Link>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="h-8 w-px bg-gray-200 hidden sm:block"></div>

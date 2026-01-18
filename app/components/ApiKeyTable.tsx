@@ -198,7 +198,7 @@ export default function ApiKeyTable({ isReadOnly = false }: ApiKeyTableProps) {
             <button
               onClick={handleGenerateApiKey}
               disabled={isGenerating || !keyName.trim() || (organizations.length > 1 && !selectedOrganizationId)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-black disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               {isGenerating ? "Generating..." : "Generate API Key"}
             </button>

@@ -17,7 +17,7 @@ export default function CRMPage() {
     const [viewCustomer, setViewCustomer] = useState<any>(null);
 
     return (
-        <div className="space-y-6">
+        <div>
             <PageHeader
                 title="Customer Data"
                 description="Manage your customer interactions, tags, and status in one place."
@@ -36,7 +36,7 @@ export default function CRMPage() {
                     </button>
                     <button
                         onClick={() => setIsAddOpen(true)}
-                        className="px-4 py-2.5 bg-blue-600 text-white font-inter font-medium rounded-xl hover:bg-blue-700 transition flex items-center gap-2"
+                        className="px-4 py-2.5 bg-slate-900 text-white font-inter font-medium rounded-xl hover:bg-black transition flex items-center gap-2"
                     >
                         <AddIcon className="w-5 h-5" />
                         Add Customer
@@ -45,7 +45,7 @@ export default function CRMPage() {
             </PageHeader>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Customer */}
                 <div className="bg-white rounded-2xl p-6 border border-gray-200 flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white">
@@ -136,7 +136,7 @@ export default function CRMPage() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Details</label>
                         <textarea className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20" rows={4} placeholder="Additional info..." />
                     </div>
-                    <button className="w-full py-3 bg-blue-600 text-white font-inter font-medium rounded-xl hover:bg-blue-700 transition">
+                    <button className="w-full py-3 bg-slate-900 text-white font-inter font-medium rounded-xl hover:bg-black transition">
                         Save Customer
                     </button>
                 </div>

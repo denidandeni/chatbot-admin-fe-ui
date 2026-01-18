@@ -60,14 +60,14 @@ export default function ChatbotForm({
     const loggedInUser = getLoggedInUser();
     const userOrgId = loggedInUser?.organization_id;
     const isSuper = isSuperAdmin();
-    
+
     console.log("👤 Logged in user info:", {
       email: loggedInUser?.email,
       role: loggedInUser?.role,
       organization_id: userOrgId,
       isSuperAdmin: isSuper
     });
-    
+
     // Disable org field if user has organization_id AND is NOT super admin
     // Super admin should always be able to select organization
     if (userOrgId && !isSuper) {
@@ -75,7 +75,7 @@ export default function ChatbotForm({
     } else {
       setIsOrgFieldDisabled(false);
     }
-    
+
     if (chatbot) {
       console.log("📦 Chatbot data received:", {
         id: chatbot.id,
@@ -83,13 +83,13 @@ export default function ChatbotForm({
         organization_id: chatbot.organization_id,
         hasOrgId: !!chatbot.organization_id
       });
-      
+
       // For super admin: use chatbot's org_id
       // For admin: use chatbot's org_id, or fallback to user's org_id
-      const finalOrgId = isSuper 
+      const finalOrgId = isSuper
         ? (chatbot.organization_id || "")
         : (chatbot.organization_id || userOrgId || "");
-      
+
       console.log("🎯 Organization ID resolution:", {
         chatbotOrgId: chatbot.organization_id,
         userOrgId: userOrgId,
@@ -97,7 +97,7 @@ export default function ChatbotForm({
         isSuper: isSuper,
         source: chatbot.organization_id ? "chatbot" : (userOrgId ? "user" : "none")
       });
-      
+
       setFormData({
         name: chatbot.name,
         description: chatbot.description,
@@ -105,9 +105,9 @@ export default function ChatbotForm({
         organization_id: finalOrgId,
         model: chatbot.model || "",
       });
-      
+
       console.log("✅ FormData set with organization_id:", finalOrgId);
-      
+
       // Load API keys for the chatbot (only if feature is enabled)
       if (FEATURES.API_KEYS) {
         fetchApiKeys();
@@ -123,7 +123,7 @@ export default function ChatbotForm({
       }));
     }
     setError("");
-    
+
     // Fetch organizations if super admin OR if user doesn't have organization_id
     if (isSuper || !userOrgId) {
       fetchOrganizations();
@@ -143,7 +143,7 @@ export default function ChatbotForm({
     try {
       setLoadingSubscription(true);
       const isSuper = isSuperAdmin();
-      const state = isSuper 
+      const state = isSuper
         ? await getOrganizationSubscriptionState(organizationId)
         : await getMySubscriptionState();
       setSubscriptionState(state);
@@ -179,9 +179,9 @@ export default function ChatbotForm({
       console.log("🔑 Starting API key generation...");
       console.log("📝 Chatbot name:", chatbot.name);
       console.log("📝 Chatbot ID:", chatbot.id);
-      
+
       await generateApiKey(chatbot.id, `${chatbot.name}-key`); // Default: 1 year expiry
-      
+
       console.log("✅ API key generated, refreshing list...");
       showToast("API Key generated successfully", "success");
       await fetchApiKeys();
@@ -193,7 +193,7 @@ export default function ChatbotForm({
         fullData: err?.response?.data,
         message: err?.message,
       });
-      
+
       // Check if it's a 404 or 400 error (endpoint not implemented)
       if (err?.response?.status === 404 || err?.response?.status === 400) {
         showToast("API Key feature is not available yet", "warning");
@@ -398,7 +398,7 @@ export default function ChatbotForm({
           <label className="block text-sm font-medium font-inter text-gray-900 mb-2">
             Tipe Chatbot <span className="text-red-500">*</span>
           </label>
-          
+
           {/* Upgrade Banner for Admin Users */}
           {!isSuperAdmin() && formData.organization_id && allowedModels.length > 0 && (
             (() => {
@@ -417,7 +417,7 @@ export default function ChatbotForm({
                           Upgrade untuk Model Premium
                         </h4>
                         <p className="text-sm text-yellow-700 mt-1 font-inter">
-                          Ada model chatbot yang lebih canggih tersedia dengan upgrade subscription. 
+                          Ada model chatbot yang lebih canggih tersedia dengan upgrade subscription.
                           Model yang terkunci: {lockedModels.map(model => {
                             const plan = requiredPlanByModel[model];
                             return `${model} (${plan})`;
@@ -438,7 +438,7 @@ export default function ChatbotForm({
               return null;
             })()
           )}
-          
+
           {formData.organization_id && (
             <div className="mb-2 p-3 rounded-lg border border-gray-200 bg-gray-50">
               <div className="text-sm font-inter text-gray-800">
@@ -492,81 +492,81 @@ export default function ChatbotForm({
 
         {/* API Keys Management Section - Only show if feature is enabled */}
         {FEATURES.API_KEYS && (
-        <div className="border-t border-gray-200 pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-semibold font-inter text-gray-900">API Keys</h3>
-              <p className="text-sm text-gray-600 mt-1">Manage API keys for this chatbot</p>
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold font-inter text-gray-900">API Keys</h3>
+                <p className="text-sm text-gray-600 mt-1">Manage API keys for this chatbot</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerateApiKey}
+                disabled={generatingApiKey}
+                className="px-4 py-2 bg-green-600 text-white text-sm font-inter font-medium rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {generatingApiKey ? "Generating..." : "+ Generate New Key"}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleGenerateApiKey}
-              disabled={generatingApiKey}
-              className="px-4 py-2 bg-green-600 text-white text-sm font-inter font-medium rounded-lg hover:bg-green-700 transition disabled:opacity-50"
-            >
-              {generatingApiKey ? "Generating..." : "+ Generate New Key"}
-            </button>
-          </div>
 
-          {loadingApiKeys ? (
-            <div className="text-center py-4 text-gray-500 text-sm">Loading API keys...</div>
-          ) : apiKeys.length > 0 ? (
-            <div className="space-y-3">
-              {apiKeys.map((key) => (
-                <div key={key.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <code className="text-sm bg-white px-3 py-1 rounded border border-gray-300 font-mono">
-                        {key.key_prefix}...
-                      </code>
-                      <span className={`text-xs px-2 py-1 rounded ${key.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {key.is_active ? 'Active' : 'Inactive'}
-                      </span>
+            {loadingApiKeys ? (
+              <div className="text-center py-4 text-gray-500 text-sm">Loading API keys...</div>
+            ) : apiKeys.length > 0 ? (
+              <div className="space-y-3">
+                {apiKeys.map((key) => (
+                  <div key={key.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <code className="text-sm bg-white px-3 py-1 rounded border border-gray-300 font-mono">
+                          {key.key_prefix}...
+                        </code>
+                        <span className={`text-xs px-2 py-1 rounded ${key.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {key.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-xs text-gray-600 space-y-1">
+                        <p><strong>Name:</strong> {key.name}</p>
+                        <p><strong>Created:</strong> {new Date(key.created_at).toLocaleString()}</p>
+                        {key.last_used_at && (
+                          <p><strong>Last Used:</strong> {new Date(key.last_used_at).toLocaleString()}</p>
+                        )}
+                        {key.expires_at && (
+                          <p><strong>Expires:</strong> {new Date(key.expires_at).toLocaleString()}</p>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-2 text-xs text-gray-600 space-y-1">
-                      <p><strong>Name:</strong> {key.name}</p>
-                      <p><strong>Created:</strong> {new Date(key.created_at).toLocaleString()}</p>
-                      {key.last_used_at && (
-                        <p><strong>Last Used:</strong> {new Date(key.last_used_at).toLocaleString()}</p>
-                      )}
-                      {key.expires_at && (
-                        <p><strong>Expires:</strong> {new Date(key.expires_at).toLocaleString()}</p>
-                      )}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteApiKey(key.id)}
+                      className="ml-4 px-3 py-2 bg-red-50 text-red-600 text-sm font-inter rounded-lg hover:bg-red-100 transition"
+                    >
+                      Delete
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteApiKey(key.id)}
-                    className="ml-4 px-3 py-2 bg-red-50 text-red-600 text-sm font-inter rounded-lg hover:bg-red-100 transition"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
-              <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-              </svg>
-              <p className="text-gray-500 text-sm">No API keys generated yet</p>
-              <p className="text-gray-400 text-xs mt-1">Click "Generate New Key" to create one</p>
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
+                <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                <p className="text-gray-500 text-sm">No API keys generated yet</p>
+                <p className="text-gray-400 text-xs mt-1">Click "Generate New Key" to create one</p>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Ingestion Section - Show for edit chatbot */}
         <IngestionSection chatbotId={chatbot.id} />
 
         {/* User Access Section - Show for edit chatbot */}
-        <UserAccessSection 
+        <UserAccessSection
           key={`user-access-${chatbot.id}-${userAccessKey}`}
-          chatbotId={chatbot.id} 
+          chatbotId={chatbot.id}
           chatbotName={formData.name}
           organizationId={formData.organization_id}
         />
-        
+
         {(() => {
           console.log('🔍 UserAccessSection Props:', {
             chatbotId: chatbot.id,
@@ -590,7 +590,7 @@ export default function ChatbotForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Update Chatbot"}
           </button>

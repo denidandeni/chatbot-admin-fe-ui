@@ -67,18 +67,18 @@ export default function CreateChatbotForm({
 
   useEffect(() => {
     setError("");
-    
+
     // Auto-set organization_id from logged in user (only if NOT super admin)
     const loggedInUser = getLoggedInUser();
     const isSuper = isSuperAdmin();
-    
+
     console.log("👤 Create form - User info:", {
       email: loggedInUser?.email,
       role: loggedInUser?.role,
       organization_id: loggedInUser?.organization_id,
       isSuperAdmin: isSuper
     });
-    
+
     if (loggedInUser?.organization_id && !isSuper) {
       setFormData(prev => ({
         ...prev,
@@ -93,7 +93,7 @@ export default function CreateChatbotForm({
       setIsOrgFieldDisabled(false);
       fetchOrganizations();
     }
-    
+
     fetchCurrentUserRole();
   }, []);
 
@@ -125,29 +125,29 @@ export default function CreateChatbotForm({
       setOrganizationAdmins([]);
       return;
     }
-    
+
     try {
       setLoadingAdmins(true);
       console.log("👥 Fetching users for organization:", organizationId);
       const users = await getUsersByOrganization(organizationId);
-      
+
       // Filter hanya admin dari organization tersebut
       const admins = users.filter(user => user.role === 'admin');
-      console.log("👔 Found admins:", admins.length, admins.map(a => ({ 
-        id: a.id, 
-        name: a.name, 
+      console.log("👔 Found admins:", admins.length, admins.map(a => ({
+        id: a.id,
+        name: a.name,
         email: a.email,
         // Log all keys to see what fields are available
         allKeys: Object.keys(a)
       })));
-      
+
       // Validate that all admins have an ID
       const adminsWithoutId = admins.filter(a => !a.id);
       if (adminsWithoutId.length > 0) {
         console.error("❌ Some admins are missing ID field:", adminsWithoutId);
         showToast("Warning: Some admins don't have valid IDs", "warning");
       }
-      
+
       setOrganizationAdmins(admins);
     } catch (err) {
       console.error("Error fetching organization admins:", err);
@@ -180,7 +180,7 @@ export default function CreateChatbotForm({
       // For regular admin, use /me endpoint (which uses their organization)
       const isSuper = isSuperAdmin();
       console.log("👤 Is super admin:", isSuper);
-      const state = isSuper 
+      const state = isSuper
         ? await getOrganizationSubscriptionState(organizationId)
         : await getMySubscriptionState();
       setSubscriptionState(state);
@@ -224,7 +224,7 @@ export default function CreateChatbotForm({
         data: err?.response?.data,
         message: err?.message,
       });
-      
+
       // Check if it's a 404 or 400 error (endpoint not implemented)
       if (err?.response?.status === 404 || err?.response?.status === 400) {
         console.log("⚠️ API Key endpoint not available yet - skipping");
@@ -247,7 +247,7 @@ export default function CreateChatbotForm({
       setGeneratingApiKey(false);
     }
   }
-  
+
   const fetchOrganizations = async () => {
     try {
       setLoadingOrgs(true);
@@ -297,18 +297,18 @@ export default function CreateChatbotForm({
       setError("Organization is required");
       return;
     }
-    if (!formData.model){
+    if (!formData.model) {
       setError("chatbot type is required");
       return;
     }
 
     try {
       setSubmitting(true);
-      
+
       // Re-fetch fresh admin data before creating chatbot to avoid stale data
       console.log("🔄 Re-fetching organization admins before chatbot creation...");
       await fetchOrganizationAdmins(formData.organization_id);
-      
+
       await onSubmit(formData);
       // After successful creation, form will stay open
     } catch (err: any) {
@@ -487,9 +487,9 @@ export default function CreateChatbotForm({
 
         {/* User Access Section - Show when chatbot is being created or after creation */}
         {createdChatbot && (
-          <UserAccessSection 
+          <UserAccessSection
             key={`user-access-create-${createdChatbot.id}-${userAccessKey}`}
-            chatbotId={createdChatbot.id} 
+            chatbotId={createdChatbot.id}
             chatbotName={formData.name}
             organizationId={formData.organization_id}
             autoAssignAdmins={organizationAdmins}
@@ -509,7 +509,7 @@ export default function CreateChatbotForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-3 bg-blue-600 text-white font-inter font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 bg-slate-900 text-white font-inter font-medium rounded-lg hover:bg-black transition disabled:opacity-50"
           >
             {createdChatbot ? "Done" : "Create Chatbot"}
           </button>

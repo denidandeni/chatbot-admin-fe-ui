@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isAdmin, isSuperAdmin } from "@/services/tokenUtils";
+import GroupsIcon from '@mui/icons-material/Groups';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import ContactsIcon from '@mui/icons-material/Contacts';
@@ -46,9 +47,9 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     id: "support",
-    label: "User Management",
+    label: "Team Management",
     href: "/admin/user",
-    icon: SupportAgentIcon,
+    icon: GroupsIcon,
   },
   {
     id: "ai-agent",
@@ -57,7 +58,6 @@ const sidebarItems: SidebarItem[] = [
     children: [
       { id: "all-agents", label: "All Agents", href: "/admin/chatbot" },
       { id: "knowledge-base", label: "Knowledge Base", href: "/admin/ai-agent/knowledge-base" },
-      { id: "platforms", label: "Connected Platform", href: "/admin/ai-agent/platforms" },
     ],
   },
   {
@@ -67,6 +67,7 @@ const sidebarItems: SidebarItem[] = [
     children: [
       { id: "connectors", label: "Setup Connectors", href: "/admin/settings/connectors" },
       { id: "api-keys", label: "API Keys", href: "/admin/api-key" },
+      { id: "subscription", label: "Subscription", href: "/admin/settings/subscription" },
     ],
   },
   {

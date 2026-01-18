@@ -145,69 +145,65 @@ export default function ChatbotPage() {
 
   return (
     <div>
-
       {/* Header */}
       <PageHeader
-        title="Agent Management"
+        title="AI Agent"
         description={isSuper
           ? "Create and manage your agent instances"
           : "Manage your agent instances"}
         breadcrumbItems={[
           { label: "Pages" },
-          { label: "AI Agents", href: "/admin/chatbot" }
+          { label: "AI Agent", href: "/admin/chatbot" }
         ]}
       >
-        {/* Only show Create button for super admin */}
-        {isSuper && (
-          <button
-            onClick={() => handleOpenForm()}
-            className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:opacity-90 transition flex items-center gap-2 justify-center sm:justify-start"
+        <button
+          onClick={() => router.push("/admin/chatbot/create")}
+          className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-black transition shadow-sm flex items-center gap-2"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create New Agent
-          </button>
-        )}
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Create New Agent
+        </button>
       </PageHeader>
 
       {/* Grid Layout */}
       {isLoadingChatbots ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-64 rounded-lg bg-muted/20 animate-pulse border"></div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mt-8">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-1">
           {chatbots.length > 0 ? (
             chatbots.map((chatbot) => (
               <ChatbotCard
                 key={chatbot.id}
                 chatbot={chatbot}
                 onEdit={handleOpenForm}
-                onDelete={handleDelete}
+                onDelete={(chatbot) => setDeleteTarget(chatbot)}
                 onClick={(chatbot) => router.push(`/admin/chatbot/${chatbot.id}`)}
                 isSuperAdmin={isSuper}
               />
             ))
           ) : (
-            // Show empty state or mock data if requested (using mock data here as fallback visually)
             <div className="col-span-full py-12 text-center text-muted-foreground border rounded-lg bg-muted/10 border-dashed">
               No agents found. Create your first agent to get started.
             </div>
           )}
         </div>
       )}
-
 
       {/* Slide Sheet for Create Form */}
       <SlideSheet
@@ -252,6 +248,6 @@ export default function ChatbotPage() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
-    </div>
+    </div >
   );
 }

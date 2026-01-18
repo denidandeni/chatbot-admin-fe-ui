@@ -47,7 +47,7 @@ export default function DesignSystemPage() {
     };
 
     return (
-        <div className="space-y-6">
+        <div>
             <PageHeader
                 title="Design System"
                 description="Manage global design tokens and styles"
@@ -64,7 +64,7 @@ export default function DesignSystemPage() {
                 </button>
             </PageHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Colors Section */}
                 <div className="bg-white rounded-[var(--radius-card)] border border-[var(--color-border)] p-[var(--padding-page)] shadow-sm">
                     <h2 className="text-xl font-bold font-inter text-gray-900 mb-6">Color Tokens</h2>
