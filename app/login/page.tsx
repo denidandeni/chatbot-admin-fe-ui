@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-// import { loginRequest } from "../../services/auth";
+import { loginRequest } from "../../services/auth";
 import { useToast } from "@/hooks/useToast";
 import ToastContainer from "@/app/components/ToastContainer";
 
@@ -15,46 +15,40 @@ export default function LoginPage() {
   const router = useRouter();
   const { toasts, showToast, removeToast } = useToast();
 
-  // Placeholder for real auth service (disabled for static demo)
-  // import { loginRequest } from "../../services/auth";
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // Simulate network delay
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Call real API via Next.js API route
+      const data = await loginRequest({ email, password });
+      
+      console.log("✅ Login successful!", data);
 
-      // Static credentials check
-      if (email === "admin@admin.com" && password === "admin") {
-        console.log("✅ Static Login successful!");
-
-        const mockUser = {
-          email: "admin@admin.com",
-          role: "admin",
-          organization_id: "static-org-123",
-          name: "Admin User"
-        };
-
-        // Simpan user data ke sessionStorage (optional, untuk UX)
-        sessionStorage.setItem("user", JSON.stringify(mockUser));
-
-        // SET MOCK COOKIE for middleware and ProtectedRoute
-        document.cookie = "access_token=static-mock-token; path=/; max-age=3600";
-
-        showToast("Login berhasil!", "success");
-
-        setTimeout(() => {
-          router.push("/admin");
-        }, 500);
-      } else {
-        const errorMessage = "Invalid email or password";
-        setError(errorMessage);
-        showToast(errorMessage, "error");
+      // Simpan user data ke sessionStorage (untuk UX)
+      if (data.user) {
+        sessionStorage.setItem("user", JSON.stringify(data.user));
       }
-    }, 1000);
+
+      showToast(data.message || "Login berhasil!", "success");
+
+      setTimeout(() => {
+        router.push("/admin");
+      }, 500);
+    } catch (err: any) {
+      console.error("❌ Login error:", err);
+      
+      const errorMessage = err?.detail?.[0]?.msg || 
+                          err?.error || 
+                          err?.message || 
+                          "Invalid email or password";
+      
+      setError(errorMessage);
+      showToast(errorMessage, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

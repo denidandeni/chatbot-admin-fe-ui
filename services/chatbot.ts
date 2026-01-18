@@ -13,6 +13,9 @@ export interface Chatbot {
   created_at: string;
   updated_at: string;
   api_keys?: ApiKeyInfo[];
+  // New fields from FastAPI response
+  contexts?: any[];
+  connector_contexts?: any[];
 }
 
 export interface CreateChatbotPayload {
@@ -33,26 +36,15 @@ export interface UpdateChatbotPayload {
 
 /**
  * Get all chatbots with their API keys
- * Filtered by organization_id if user is admin (not super admin)
+ * Uses the new FastAPI endpoint: GET /api/users/chatbots
  */
 export async function getChatbots(): Promise<Chatbot[]> {
   try {
-    const res = await api.get("/api/chatbots");
+    // Use the new FastAPI endpoint
+    const res = await api.get("/api/users/chatbots");
     let chatbots = res.data.data || res.data || [];
 
-    // Filter by organization_id only if user is admin (not super admin)
-    if (isAdmin()) {
-      const userOrgId = getLoggedInUserOrganizationId();
-      if (userOrgId) {
-        console.log("🔒 Admin user - Filtering chatbots by organization_id:", userOrgId);
-        chatbots = chatbots.filter((chatbot: Chatbot) => chatbot.organization_id === userOrgId);
-      } else {
-        console.warn("⚠️ Admin user without organization_id - showing no chatbots");
-        chatbots = [];
-      }
-    } else {
-      console.log("🌟 Super admin - Showing all chatbots");
-    }
+    console.log("✅ Fetched chatbots from /api/users/chatbots:", chatbots.length);
 
     // Skip API key fetching if feature is disabled
     if (!FEATURES.API_KEYS) {
@@ -85,7 +77,6 @@ export async function getChatbots(): Promise<Chatbot[]> {
       })
     );
 
-    return chatbotsWithKeys;
     return chatbotsWithKeys;
   } catch (error: any) {
     // STATIC DEMO FALLBACK
